@@ -31,11 +31,14 @@ waves = simpdat[3:nrowdat,1]
 #NOTE: IN R can do boolean expression inside indexing to create a boolean mask to select indices where expression is true
 #Also, a blank for an index value like we see hear in the 2nd dim of fluxes  denotes ALL values--like a wildcard.
 norm_fact = fluxes[,waves==4020]
+norm_fact_med = apply(fluxes, 1, median)
+norm_fact_mean = apply(fluxes, 1, mean)
 fluxes_norm = fluxes/norm_fact
-
+fluxes_norm_med = fluxes/norm_fact_med
+fluxes_norm_mean = fluxes/norm_fact_mean
 
 #Example user defined function in R
-plot_ssps <- function(wave, flux, save){
+plot_ssps <- function(wave, flux, save, norm= "norm4020"){
 
     #Define k, num of spectra
     k = dim(flux)[1]
@@ -50,14 +53,14 @@ plot_ssps <- function(wave, flux, save){
     if(save){
         #Grabbing system time to add to filename
         timesuff = format(Sys.Date(),"%d%b%y")
-        f1 = paste(c("dfk","_norm_4020_",timesuff,".png"),collapse='')
+        f1 = paste(c("dfk_",norm,timesuff,".png"),collapse='')
 	dev.copy(png, f1)
 	dev.off()
     }
 }
 
 #Run function to plot fluxes off all SSPS of all ages at solar Z = 0.02
-plot_ssps(waves, fluxes_norm[t(metallicities==0.02)&t(ages)<13.5e9,],save='True')
+plot_ssps(waves, fluxes_norm_mean[t(metallicities==0.02)&t(ages)<13.5e9,], norm = "norm_mean_", save='True')
 
 #Stuff to try on you own
 #Try plotting only SSPs aged 0 to 13.5e9 yrs old, as 13.5Gyr is the age of universe. Doesn't make much sense to look at older SSPs.

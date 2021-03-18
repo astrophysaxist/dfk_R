@@ -43,11 +43,13 @@ waves = simpdat[3:nrowdat,1]
 #dist() uses a Euclidiean type pairwise distance by default
 D = as.matrix(dist(fluxes_norm[t(metallicities==0.02),waves>3601&waves<8501]))
 
+eps=100000
+f1 = paste(c("dmap_", eps, ".png"),collapse='')
 #Now create a diffusion map
 #Create diffusion map
-dmap = diffuse(D, eps=1)
+dmap = diffuse(D, eps)
 plot(dmap)
-dev.copy(png, dMap1)
+dev.copy(png, f1)
 dev.off()
 
 #diffuse returns an R object with several key variables accesible by name
